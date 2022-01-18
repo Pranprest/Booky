@@ -13,7 +13,7 @@ import sys
 import os
 
 
-def parseArgs(argv=None) -> argparse.ArgumentParser:
+def argParser() -> argparse.ArgumentParser:
     _parser = argparse.ArgumentParser(
         description='Bookmark files and use them in other programs.', prog="Booky")
 
@@ -59,7 +59,7 @@ def parseArgs(argv=None) -> argparse.ArgumentParser:
     # TODO: Add "run" (run file)/"edit" (open code editor or whatever!)
     # (if that can actually be implemented)
 
-    return _parser.parse_args(argv)
+    return _parser
 
 
 def echoFile(FilePath: Path) -> None:
@@ -84,7 +84,7 @@ def main() -> None:
             f.write("")
 
     # Start handling args
-    args = parseArgs()
+    args = argParser().parse_args()
     env = args.env
 
     if isinstance(args.env, str):
