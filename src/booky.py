@@ -81,7 +81,7 @@ def main() -> None:
     del currosslash
     if not main_data_file.exists():
         with open(main_data_file, 'w') as f:
-            f.write("")
+            f.write("{}")
 
     # Start handling args
     args = argParser().parse_args()
