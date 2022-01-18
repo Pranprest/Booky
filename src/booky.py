@@ -73,14 +73,18 @@ def echoFile(FilePath: Path) -> None:
 
 def main() -> None:
     # Variable declaration
-    currfilepath = Path(__file__).parent.absolute()
     currosslash = "\\" if (os.name == "nt") else "/"
-    main_data_file = f"{currfilepath}{currosslash}data.json"
+    main_data_file = Path(
+        f"{Path(__file__).parent.absolute()}{currosslash}data.json")
+    # TODO: Implement "config" file with toml
+    # main_cfg_file = smth
     del currosslash
-    del currfilepath
+    if not main_data_file.exists():
+        with open(main_data_file, 'w') as f:
+            f.write("")
+
     # Start handling args
     args = parseArgs()
-    print(args)
     env = args.env
 
     if isinstance(args.env, str):
@@ -93,8 +97,7 @@ def main() -> None:
                 json.dump(full_data, f, indent=4)
                 f.truncate()
 
-    # Check if file/folder is an alias
-    # If so, make "args.file" be it's path
+    # If args.main is an alias, set it to it's path
     with open(main_data_file, "r") as f:
         full_data = json.load(f)
     original_alias = args.file
@@ -131,14 +134,14 @@ def main() -> None:
 
     if not args.add == None:
         alias = args.add
-
+        if not filepath.exists():
+            print("Not a valid filepath, exiting.")
+            sys.exit(1)
         with open(main_data_file, "r") as f:
             full_data = json.load(f)
         # If alias already exists in env
         update_alias = False
         if alias in full_data[env]:
-            print(
-                f"Alias '{alias}' already exists in env '{env}', updating...")
             update_alias = True
         full_data[env][alias] = f"{filepath}"
 
@@ -147,7 +150,7 @@ def main() -> None:
             json.dump(full_data, f, indent=4)
             f.truncate()
 
-        if not update_alias:
+        if update_alias:
             print(f"Alias '{alias}' in env '{env}' updated successfully!")
         else:
             print(
