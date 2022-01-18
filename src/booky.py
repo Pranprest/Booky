@@ -83,7 +83,6 @@ def main() -> None:
     print(args)
     env = args.env
 
-    # Firstly check if env exists
     if isinstance(args.env, str):
         # Check if env is actually in there, if not, create new one.
         with open(main_data_file, "r+") as f:
@@ -103,9 +102,6 @@ def main() -> None:
         args.file = full_data[env][args.file]
     del full_data
     filepath = Path(args.file).absolute()
-    if not filepath.exists():
-        print("Not a valid file, directory or alias")
-        sys.exit(1)
 
     # Handle arguments properly now
     if args.list == True:
@@ -118,6 +114,9 @@ def main() -> None:
         sys.exit(0)
 
     if args.path == True:
+        if not filepath.exists():
+            print("Not a valid file or directory")
+            sys.exit(1)
         print(filepath)
 
     if args.output == True:
@@ -156,11 +155,10 @@ def main() -> None:
         sys.exit(0)
 
     if args.remove == True:
-        # FIXME: Works weirdly with non-default env aliases lol
         with open(main_data_file, "r+") as f:
             full_data = json.load(f)
             if not original_alias in full_data[env]:
-                print(f'Alias not found under env "{env}"')
+                print(f'Alias {original_alias} not found under env "{env}"')
                 sys.exit(1)
             del full_data[env][original_alias]
             f.seek(0)
