@@ -1,2 +1,0 @@
-pick==1.2.0
-windows-curses==2.3.0
