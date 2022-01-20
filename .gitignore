@@ -5,3 +5,5 @@ venv
 *.log
 __pycache__
 data.json
+*.egg-info
+build
