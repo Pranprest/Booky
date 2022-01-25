@@ -95,10 +95,11 @@ def main() -> None:
                 json.dump(full_data, f, indent=4)
                 f.truncate()
 
+    original_alias = args.file
     if not args.file == None:
         with open(main_data_file, "r") as f:
             full_data = json.load(f)
-        original_alias = args.file
+
         if args.file in full_data[env]:
             args.file = full_data[env][args.file]
         del full_data
@@ -117,7 +118,7 @@ def main() -> None:
             print(f'"{key}": "{val}"')
         sys.exit(0)
 
-    if args.output == True:
+    if args.output == True and not args.file == None:
         if not filepath.exists():
             print("Not a valid file or directory")
             sys.exit(1)
@@ -127,7 +128,7 @@ def main() -> None:
             print(*os.listdir(filepath))
         sys.exit(0)
 
-    if not args.add == None:
+    if not args.add == None and not args.file == None:
         # Adds keyword + file as an json key if it doesnt exist,
         # otherwise, update existing one
         alias = args.add
@@ -154,7 +155,7 @@ def main() -> None:
                 f"Alias '{alias}' added to environment '{env}' successfully!")
         sys.exit(0)
 
-    if args.remove == True:
+    if args.remove == True and not args.file == None:
         with open(main_data_file, "r+") as f:
             full_data = json.load(f)
             if not original_alias in full_data[env]:
