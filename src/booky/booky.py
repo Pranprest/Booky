@@ -97,22 +97,20 @@ def main() -> None:
 
     original_alias = args.file
     if not args.file == None:
+        # Share this single "read" call for every argument
         with open(main_data_file, "r") as f:
             full_data = json.load(f)
-
         if args.file in full_data[env]:
             args.file = full_data[env][args.file]
-        del full_data
         filepath = Path(args.file).absolute()
 
     # Mutulally exclusive arguments:
     if args.list == True:
         # Print alias'es folder, if not, print all of env's variables
-        if filepath.is_dir():
-            print(*os.listdir(filepath))
-            sys.exit()
-        with open(main_data_file, "r+") as f:
-            full_data = json.load(f)
+        if args.file != None:
+            if filepath.is_dir():
+                print(*os.listdir(filepath))
+                sys.exit()
         print(f"These are the aliases within env '{env}':")
         for key, val in full_data[env].items():
             print(f'"{key}": "{val}"')
@@ -135,8 +133,6 @@ def main() -> None:
         if not filepath.exists():
             print("Not a valid filepath, exiting.")
             sys.exit(1)
-        with open(main_data_file, "r") as f:
-            full_data = json.load(f)
         # If alias already exists in env
         update_alias = False
         if alias in full_data[env]:
@@ -156,8 +152,7 @@ def main() -> None:
         sys.exit(0)
 
     if args.remove == True and not args.file == None:
-        with open(main_data_file, "r+") as f:
-            full_data = json.load(f)
+        with open(main_data_file, "w") as f:
             if not original_alias in full_data[env]:
                 print(f'Alias {original_alias} not found under env "{env}"')
                 sys.exit(1)
