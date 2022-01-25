@@ -1,12 +1,14 @@
 # Booky
+## Overview
 A command line utility for bookmarking files for quick access
-    
+
 With it you can:
 - Bookmark and delete your (aliases of) files at demand
 - Launch them and use them in pipes like regular files!
     > ```booky booky_source -o | code - ```
 - Cat them
 - Move their file locations 
+- Whatever else you can do with pipes!
 
 Basically, Booky has the following options:
 ```
@@ -20,6 +22,13 @@ Basically, Booky has the following options:
                         Lists every alias in current environment
 ```                     
 (yes, i did just copy the "-h" arg, its a great description imo!)
+
+## Installation
+
+Install the latest development version from main:
+```
+pip install git+git://github.com/Pranprest/Booky/
+```
 
 ## Notes
 This application was just made for fun, most likely it won't be the most optimized 
