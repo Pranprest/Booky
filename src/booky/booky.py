@@ -81,8 +81,6 @@ def main() -> None:
     if not main_data_file.exists():
         with open(main_data_file, 'w') as f:
             f.write("{}")
-
-    # Start handling args
     parser = argParser()
     args = parser.parse_args()
     env = args.env
@@ -106,21 +104,18 @@ def main() -> None:
         del full_data
         filepath = Path(args.file).absolute()
 
-    # Handle arguments properly now
+    # Mutulally exclusive arguments:
     if args.list == True:
-        # Literally just print everything under XYZ env
+        # Print alias'es folder, if not, print all of env's variables
+        if filepath.is_dir():
+            print(*os.listdir(filepath))
+            sys.exit()
         with open(main_data_file, "r+") as f:
             full_data = json.load(f)
         print(f"These are the aliases within env '{env}':")
         for key, val in full_data[env].items():
             print(f'"{key}": "{val}"')
         sys.exit(0)
-
-    if args.path == True:
-        if not filepath.exists():
-            print("Not a valid file or directory")
-            sys.exit(1)
-        print(filepath)
 
     if args.output == True:
         if not filepath.exists():
@@ -133,6 +128,8 @@ def main() -> None:
         sys.exit(0)
 
     if not args.add == None:
+        # Adds keyword + file as an json key if it doesnt exist,
+        # otherwise, update existing one
         alias = args.add
         if not filepath.exists():
             print("Not a valid filepath, exiting.")
@@ -169,6 +166,10 @@ def main() -> None:
             f.truncate()
         print(f'Alias {original_alias} sucessfully removed from env "{env}"!')
         sys.exit(0)
+
+    # if nothing else than the file is specified, run --path
+    if not args.file == None:
+        print(filepath)
 
     # if there's no file and there was no other option, print help
     if args.file == None:
