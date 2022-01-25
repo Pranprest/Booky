@@ -20,6 +20,7 @@ def argParser() -> argparse.ArgumentParser:
     # Manage bookmarks themselves
     _parser.add_argument('file',
                          type=str,
+                         nargs="?",
                          metavar="File/Alias",
                          help="The file/alias that will be used")
 
@@ -76,15 +77,14 @@ def main() -> None:
     currosslash = "\\" if (os.name == "nt") else "/"
     main_data_file = Path(
         f"{Path(__file__).parent.absolute()}{currosslash}data.json")
-    # TODO: Implement "config" file with toml
-    # main_cfg_file = smth
     del currosslash
     if not main_data_file.exists():
         with open(main_data_file, 'w') as f:
             f.write("{}")
 
     # Start handling args
-    args = argParser().parse_args()
+    parser = argParser()
+    args = parser.parse_args()
     env = args.env
 
     if isinstance(args.env, str):
@@ -97,14 +97,14 @@ def main() -> None:
                 json.dump(full_data, f, indent=4)
                 f.truncate()
 
-    # If args.main is an alias, set it to it's path
-    with open(main_data_file, "r") as f:
-        full_data = json.load(f)
-    original_alias = args.file
-    if args.file in full_data[env]:
-        args.file = full_data[env][args.file]
-    del full_data
-    filepath = Path(args.file).absolute()
+    if not args.file == None:
+        with open(main_data_file, "r") as f:
+            full_data = json.load(f)
+        original_alias = args.file
+        if args.file in full_data[env]:
+            args.file = full_data[env][args.file]
+        del full_data
+        filepath = Path(args.file).absolute()
 
     # Handle arguments properly now
     if args.list == True:
@@ -168,13 +168,13 @@ def main() -> None:
             json.dump(full_data, f, indent=4)
             f.truncate()
         print(f'Alias {original_alias} sucessfully removed from env "{env}"!')
+        sys.exit(0)
+
+    # if there's no file and there was no other option, print help
+    if args.file == None:
+        parser.print_help()
+        sys.exit(0)
 
 
 if __name__ == '__main__':
-    # Weird workaround, but works pretty well!!
-    if len(sys.argv) <= 1:
-        sys.argv += "."
-    if "-" in sys.argv[1]:
-        sys.argv += "."
-        sys.argv = [*sys.argv, sys.argv.pop(1)]
     main()
