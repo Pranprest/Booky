@@ -1,11 +1,10 @@
 # Booky
-## Overview
 A command line utility for bookmarking files for quick access
 
 With it you can:
 - Bookmark and delete your (aliases of) files at demand
 - Launch them and use them in pipes like regular files!
-    > ```booky booky_source -o | code - ```
+    > ```code - <<< booky booky_source -p```
 - Cat them
 - Move their file locations 
 - Whatever else you can do with pipes!
@@ -16,7 +15,6 @@ Basically, Booky has the following options:
   -a ALIAS, --add ALIAS, --alias ALIAS
                         Bookmarks new file or updates existing one
   -r, --remove          Remove a bookmarked file under current environment
-  -o, --output          Show file/dir output (cat file or list dir)
   -p, --path            Show current file/alias'es path
   -l, --list, --list-env
                         Lists every alias in current environment
@@ -27,7 +25,7 @@ Basically, Booky has the following options:
 
 Install the latest development version from main:
 ```
-pip install git+git://github.com/Pranprest/Booky/
+pip install git+git://github.com/Pranprest/Booky
 ```
 
 ## Notes
